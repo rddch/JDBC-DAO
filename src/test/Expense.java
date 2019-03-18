@@ -9,36 +9,27 @@ public class Expense {
     private Receiver receiver;
     private Date date;
 
-    public int getNum() {
-        return num;
+    public Expense(int num, int value, Date date) {
+        this.num = num;
+        this.value = value;
+        this.date = date;
     }
 
-    public void setNum(int num) {
-        this.num = num;
+    public int getNum() {
+        return num;
     }
 
     public int getValue() {
         return value;
     }
+    public Date getDate() { return date; }
 
-    public void setValue(int value) {
-        this.value = value;
-    }
+    public void setReceiver(Receiver receiver) { this.receiver = receiver; }
 
-    public Receiver getReceiver() {
-        return receiver;
-    }
+    public Receiver getReceiver() { return receiver; }
 
-    public void setReceiver(Receiver receiver) {
-        this.receiver = receiver;
-    }
 
-    public Date getDate() {
-        return date;
-    }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+
 
 }

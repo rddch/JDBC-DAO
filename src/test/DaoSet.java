@@ -5,14 +5,17 @@ import java.util.ArrayList;
 
 public class DaoSet implements Dao {
 
+    private PreparedStatement preparedStatement;
+    private ResultSet resultSet;
+
     public void getReceiver(int num) {
 
         try {
             String query = "SELECT * FROM receiver WHERE receiver_num = ?;";
-            PreparedStatement preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
+            preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
             preparedStatement.setInt(1, num);
             preparedStatement.execute();
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 int receiver_num = resultSet.getInt(1);
@@ -23,7 +26,7 @@ public class DaoSet implements Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        }
+    }
 
     public ArrayList<Receiver> getReceivers() {
 
@@ -32,11 +35,9 @@ public class DaoSet implements Dao {
 
         try {
             Statement statement = Connect.getInstance().getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+            resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                Receiver n = new Receiver();
-                n.setNum(resultSet.getInt(1));
-                n.setName(resultSet.getString(2));
+                Receiver n = new Receiver(resultSet.getInt(1), resultSet.getString(2));
                 lst.add(n);
             }
         } catch (SQLException e) {
@@ -57,7 +58,7 @@ public class DaoSet implements Dao {
             preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
             preparedStatement.setInt(1, num);
             preparedStatement.execute();
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 int receiver_num = resultSet.getInt(4);
@@ -79,13 +80,13 @@ public class DaoSet implements Dao {
 
         try {
             Statement statement = Connect.getInstance().getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+            resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                Expense ex = new Expense();
-                ex.setValue(resultSet.getInt(2));
-                ex.setDate(resultSet.getDate(3));
-                ex.setNum(resultSet.getInt(4));
+                Expense ex = new Expense(
+                        resultSet.getInt(4),
+                        resultSet.getInt(2),
+                        resultSet.getDate(3));
                 expense.add(ex);
             }
 
@@ -104,9 +105,8 @@ public class DaoSet implements Dao {
         int num = receiver.getNum();
         String query = "INSERT INTO receiver (receiver_num, receiver_name) VALUES (?,?);";
 
-
         try {
-            PreparedStatement preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
+            preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
             preparedStatement.setInt(1, num);
             preparedStatement.setString(2, name);
             preparedStatement.execute();
@@ -125,7 +125,7 @@ public class DaoSet implements Dao {
         String query = "INSERT INTO expense (expense_value, expense_date, receiver_num) VALUES (?, ?, ?);";
 
         try {
-            PreparedStatement preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
+            preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
             preparedStatement.setDate(2, new Date(date));
             preparedStatement.setInt(1, value);
             preparedStatement.setInt(3, num);

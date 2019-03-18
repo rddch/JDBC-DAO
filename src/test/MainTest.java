@@ -6,22 +6,15 @@ public class MainTest {
 
     public static void main(String[] args) {
 
-        Long date = System.currentTimeMillis();
-
         DaoSet myDao = new DaoSet();
-        Receiver receiver = new Receiver();
-        Expense expense = new Expense();
+        Receiver receiver = new Receiver(5, "Ангелина");
+        Expense expense = new Expense(6, 90, new Date(System.currentTimeMillis()));
 
-        receiver.setNum(4);
-        receiver.setName("Николай");
         myDao.addReceiver(receiver);
         myDao.getReceiver(3);
 
         expense.setReceiver(receiver);
-        expense.setNum(2);
-        expense.setValue(120);
-        expense.setDate(new Date(date));
         myDao.addExpense(expense);
-        myDao.getExpense(2);
+        myDao.getExpense(1);
     }
 }
