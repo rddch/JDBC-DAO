@@ -6,11 +6,10 @@ import java.util.ArrayList;
 public class DaoSet implements Dao {
 
     public void getReceiver(int num) {
-        PreparedStatement preparedStatement;
-        String query = "SELECT * FROM receiver WHERE receiver_num = ?;";
 
-        try (Connection connection = DriverManager.getConnection(MainTest.URL, MainTest.USERNAME, MainTest.PASSWORD)) {
-            preparedStatement = connection.prepareStatement(query);
+        try {
+            String query = "SELECT * FROM receiver WHERE receiver_num = ?;";
+            PreparedStatement preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
             preparedStatement.setInt(1, num);
             preparedStatement.execute();
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -24,15 +23,15 @@ public class DaoSet implements Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+        }
 
     public ArrayList<Receiver> getReceivers() {
 
         ArrayList<Receiver> lst = new ArrayList<>();
         String query = "SELECT * FROM receiver;";
 
-        try (Connection connection = DriverManager.getConnection(MainTest.URL, MainTest.USERNAME, MainTest.PASSWORD)) {
-            Statement statement = connection.createStatement();
+        try {
+            Statement statement = Connect.getInstance().getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
                 Receiver n = new Receiver();
@@ -43,6 +42,9 @@ public class DaoSet implements Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        for (int i = 0; i < lst.size(); i++) {
+            System.out.println(lst.get(i).getNum() + " " + lst.get(i).getName());
+        }
         return lst;
     }
 
@@ -51,8 +53,8 @@ public class DaoSet implements Dao {
         PreparedStatement preparedStatement;
         String query = "SELECT * FROM expense WHERE receiver_num = ?;";
 
-        try (Connection connection = DriverManager.getConnection(MainTest.URL, MainTest.USERNAME, MainTest.PASSWORD)) {
-            preparedStatement = connection.prepareStatement(query);
+        try {
+            preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
             preparedStatement.setInt(1, num);
             preparedStatement.execute();
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -75,8 +77,8 @@ public class DaoSet implements Dao {
         ArrayList<Expense> expense = new ArrayList<>();
         String query = "SELECT * FROM expense;";
 
-        try (Connection connection = DriverManager.getConnection(MainTest.URL, MainTest.USERNAME, MainTest.PASSWORD)) {
-            Statement statement = connection.createStatement();
+        try {
+            Statement statement = Connect.getInstance().getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
@@ -90,6 +92,10 @@ public class DaoSet implements Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        for (int i = 0; i < expense.size(); i++) {
+            System.out.println(expense.get(i).getValue() + " " + expense.get(i).getDate() +
+                    " " + expense.get(i).getNum());
+        }
         return expense;
     }
 
@@ -99,8 +105,8 @@ public class DaoSet implements Dao {
         String query = "INSERT INTO receiver (receiver_num, receiver_name) VALUES (?,?);";
 
 
-        try (Connection connection = DriverManager.getConnection(MainTest.URL, MainTest.USERNAME, MainTest.PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try {
+            PreparedStatement preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
             preparedStatement.setInt(1, num);
             preparedStatement.setString(2, name);
             preparedStatement.execute();
@@ -115,11 +121,12 @@ public class DaoSet implements Dao {
     public int addExpense(Expense expense) {
         int num = expense.getNum();
         int value = expense.getValue();
+        Long date = System.currentTimeMillis();
         String query = "INSERT INTO expense (expense_value, expense_date, receiver_num) VALUES (?, ?, ?);";
 
-        try (Connection connection = DriverManager.getConnection(MainTest.URL, MainTest.USERNAME, MainTest.PASSWORD)) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setDate(2, new java.sql.Date(1552841959L));
+        try {
+            PreparedStatement preparedStatement = Connect.getInstance().getConnection().prepareStatement(query);
+            preparedStatement.setDate(2, new Date(date));
             preparedStatement.setInt(1, value);
             preparedStatement.setInt(3, num);
             preparedStatement.execute();
